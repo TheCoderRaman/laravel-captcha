@@ -1,0 +1,47 @@
+{
+    "name": "animaxdev/mvclte-captcha",
+    "description": "Captcha form validation for MvcLTE",
+    "license": "MIT",
+    "keywords": ["captcha","hcaptcha","recaptcha","mvcLTE"],
+    "authors": [
+        {
+            "name": "Animax Developers",
+            "email": "animaxdevelopers@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs", "url": "https://github.com/animaxdev/mvclte"
+        }
+    ],    
+    "require": {
+        "php": "^8.0"
+    },
+    "require-dev": {
+        "animaxdev/mvclte": "^1.0",
+        "phpunit/phpunit": "^9.5.10"
+    },    
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "MvcLTE\\": "src/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        },
+        "mvclte": {
+            "aliases": {
+                "Captcha": "MvcLTE\\Support\\Facades\\Captcha"
+            },
+            "providers": [
+                "MvcLTE\\Captcha\\CaptchaServiceProvider"
+            ]
+        }
+    }
+}
