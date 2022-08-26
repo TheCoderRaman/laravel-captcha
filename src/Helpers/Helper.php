@@ -38,7 +38,7 @@ if (! function_exists('captcha')) {
         if(empty($Name)){
             return (app(ManagerInterface::class)
                 ->getCurrentCaptcha()
-                ->getCaptcha($Path)
+                ->getCaptcha()
             );
         }
 
@@ -60,7 +60,7 @@ if (! function_exists('captcha_script')) {
         if(empty($Name)){
             return (app(ManagerInterface::class)
                 ->getCurrentCaptcha()
-                ->getScript($Path)
+                ->getScript()
             );
         }
 
