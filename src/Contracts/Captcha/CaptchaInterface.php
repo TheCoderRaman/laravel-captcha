@@ -12,23 +12,23 @@ interface CaptchaInterface
     public function verify();
 
     /**
+     * Get captcha style.
+     *
+     * @return string
+     */
+    public function getStyle();
+
+    /**
      * Get captcha.
      *
-     * @return bool
+     * @return string
      */
-    public function getCaptch();
-
+    public function getCaptcha();
+    
     /**
-     * Get captcha headers.
+     * Get captcha script.
      *
-     * @return bool
+     * @return string
      */
-    public function getHeader();
-
-    /**
-     * Verify captcha response.
-     *
-     * @return bool
-     */
-    public function getFooter();        
+    public function getScript();        
 }

@@ -3,34 +3,131 @@
 namespace MvcLTE\Captcha\Captchas;
 
 use MvcLTE\Http\Request;
-use MvcLTE\Support\Facades\Http;
-use MvcLTE\Contracts\Captcha\CaptchInterface;
+use MvcLTE\Http\Client\Factory;
+use MvcLTE\Contracts\Captcha\CaptchaInterface;
 
-class Hcaptcha implements CaptchInterface
+class Hcaptcha implements CaptchaInterface
 {
+    /**
+     * Captch key 
+     * 
+     * @var string $Key
+     */
+    protected $Key;
+
+    /**
+     * Captch secret
+     * 
+     * @var string $Secret
+     */
+    protected $Secret;
+
+    /**
+     * The http client instance.
+     * 
+     * @var MvcLTE\Http\Request $Request
+     */
+    protected $Client;
+
     /**
      * The http request instance.
      * 
      * @var MvcLTE\Http\Request $Request
      */
     protected $Request;
-
+    
     /**
-     * Hcaptcha captcha url
+     * Captcha url
      * 
-     * @var string $Captcha
+     * @var string $Url
      */
-    protected $CaptchaUrl = 'https://hcaptcha.com/siteverify';
+    protected $Url = 'https://hcaptcha.com/siteverify';
 
     /**
      * Create hcaptcha instance.
      * 
-     * @param MvcLTE\Http\Request $Request
+     * @param string $Key
+     * @param string $Secret
+     * @param string $Url
      * @return void
      */
-    public function __construct(Request $Request){
-        $this->Request = $Request;
+    public function __construct(string $Key,string $Secret,string $Url = null){
+        $this->Key = $Key;
+        $this->Secret = $Secret;
+
+        if(!empty($Url)){
+            $this->Url = $Url;
+        }
     }
+
+    /**
+     * Set captcha key.
+     * 
+     * @param string $Key
+     * @return MvcLTE\Captcha\Captchas\Hcaptcha
+     */
+    public function setKey(string $Key)
+    {
+        $this->Key = $Key;
+        
+        return $this;
+    }
+
+    /**
+     * Get captcha key.
+     * 
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->Key;
+    } 
+
+    /**
+     * Set captcha secret.
+     * 
+     * @param string $Secret
+     * @return MvcLTE\Captcha\Captchas\Hcaptcha
+     */
+    public function setSecret(string $Secret)
+    {
+        $this->Secret = $Secret;
+        
+        return $this;
+    }
+
+    /**
+     * Get captcha secret.
+     * 
+     * @return string
+     */
+    public function getSecret()
+    {
+        return $this->Secret;
+    } 
+
+    /**
+     * Set captcha url.
+     * 
+     * @param string $Url
+     * @return MvcLTE\Captcha\Captchas\Hcaptcha
+     */
+    public function setUrl(string $Url)
+    {
+        $this->Url = $Url;
+        
+        return $this;
+    }
+
+    /**
+     * Get captcha url.
+     * 
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->CaptchaUrl;
+    } 
 
     /**
      * Verify captcha response.
@@ -38,14 +135,12 @@ class Hcaptcha implements CaptchInterface
      * @return bool
      */
     public function verify(){
-        // Captcha token present in request
-        if(!$this->Request->hasInput('h-captcha-response')){
+        if($this->Request->hasInput('h-captcha-response') === false){
             return false;
         }
 
-        //Verify token
-        $Response = Http::acceptJson()->post($this->CaptchaUrl, [
-            'secret' => $secretKey,
+        $Response = Http::acceptJson()->post($this->getUrl(), [
+            'secret' => $this->getSecret(),
             'remoteip' => $this->Request->ip(),
             'response' => $this->Request->getInput(
                 'h-captcha-response'
@@ -62,12 +157,19 @@ class Hcaptcha implements CaptchInterface
     }
     
     /**
-     * Get captcha headers stylesheet code.
+     * Get captcha stylesheet code.
      *
      * @return string
      */
-    public function getHeader(){
-        return '<style>.h-captcha > div {width: 100% !important;}.h-captcha iframe {width: 100% !important;}</style>';
+    public function getStyle(){
+        return '<style>
+            .h-captcha > div {
+                width: 100% !important;
+            }
+            .h-captcha iframe {
+                width: 100% !important;
+            }
+        </style>';
     }
 
     /**
@@ -75,16 +177,65 @@ class Hcaptcha implements CaptchInterface
      *
      * @return string
      */
-    public function getCaptch(){
-        return '<div style="display:flex;margin-left:50px;"><div class="h-captcha" data-sitekey="' . $siteKey . '"></div></div>';
+    public function getCaptcha(){
+        return '<div style="display:flex;margin-left:50px;">
+            <div class="h-captcha" data-sitekey="'.$this->getKey().'"></div>
+        </div>';
     }
 
     /**
-     * Verify captcha footer script code.
+     * Get the captcha script code.
      *
      * @return string
      */
-    public function getFooter(){
-        return '<script src="https://hcaptcha.com/1/api.js" async defer></script>';
+    public function getScript(){
+        return '<script src="https://hcaptcha.com/1/api.js" async defer>
+        </script>';
     }
+
+    /**
+     * Set http client instance.
+     * 
+     * @param MvcLTE\Http\Client\Factory $Client
+     * @return MvcLTE\Captcha\Captchas\Hcaptcha
+     */
+    public function setClient(Factory $Client)
+    {
+        $this->Client = $Client;
+
+        return $this;
+    }
+
+    /**
+     * Get http client instance.
+     * 
+     * @return MvcLTE\Http\Client\Factory
+     */
+    public function getClient()
+    {
+        return $this->Client;
+    }  
+
+    /**
+     * Set http request instance.
+     * 
+     * @param MvcLTE\Http\Request $Request
+     * @return MvcLTE\Captcha\Captchas\Hcaptcha
+     */
+    public function setRequest(Request $Request)
+    {
+        $this->Request = $Request;
+
+        return $this;
+    }
+
+    /**
+     * Get http request instance.
+     * 
+     * @return MvcLTE\Http\Request
+     */
+    public function getRequest()
+    {
+        return $this->Request;
+    }    
 }

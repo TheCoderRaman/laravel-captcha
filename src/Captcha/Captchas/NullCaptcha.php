@@ -3,10 +3,10 @@
 namespace MvcLTE\Captcha\Captchas;
 
 use MvcLTE\Http\Request;
-use MvcLTE\Support\Facades\Http;
+use MvcLTE\Http\Client\Factory;
 use MvcLTE\Contracts\Captcha\CaptchaInterface;
 
-class ReCaptcha implements CaptchaInterface
+class NullCaptcha implements CaptchaInterface
 {
     /**
      * Captch key 
@@ -35,16 +35,16 @@ class ReCaptcha implements CaptchaInterface
      * @var MvcLTE\Http\Request $Request
      */
     protected $Request;
-
+    
     /**
-     * Captcha  url
+     * Captcha url
      * 
      * @var string $Url
      */
-    protected $Url = 'https://www.google.com/recaptcha/api/siteverify';
+    protected $Url = '';
 
     /**
-     * Create ReCaptcha instance.
+     * Create hcaptcha instance.
      * 
      * @param string $Key
      * @param string $Secret
@@ -64,7 +64,7 @@ class ReCaptcha implements CaptchaInterface
      * Set captcha key.
      * 
      * @param string $Key
-     * @return MvcLTE\Captcha\Captchas\ReCaptcha
+     * @return MvcLTE\Captcha\Captchas\Hcaptcha
      */
     public function setKey(string $Key)
     {
@@ -87,7 +87,7 @@ class ReCaptcha implements CaptchaInterface
      * Set captcha secret.
      * 
      * @param string $Secret
-     * @return MvcLTE\Captcha\Captchas\ReCaptcha
+     * @return MvcLTE\Captcha\Captchas\Hcaptcha
      */
     public function setSecret(string $Secret)
     {
@@ -110,7 +110,7 @@ class ReCaptcha implements CaptchaInterface
      * Set captcha url.
      * 
      * @param string $Url
-     * @return MvcLTE\Captcha\Captchas\ReCaptcha
+     * @return MvcLTE\Captcha\Captchas\Hcaptcha
      */
     public function setUrl(string $Url)
     {
@@ -135,41 +135,16 @@ class ReCaptcha implements CaptchaInterface
      * @return bool
      */
     public function verify(){
-        if($this->Request->hasInput('g-recaptcha-response') === false){
-            return false;
-        }
-
-        $Response = Http::acceptJson()->get($this->getUrl(), [
-            'secret' => $this->getSecret(),
-            'remoteip' => $this->Request->ip(),
-            'response' => $this->Request->getInput(
-                'g-recaptcha-response'
-            )
-        ]);
-
-        if($Response->successful()){
-            if(!isset($Response['success'])){
-                return false;
-            }
-        }
-
         return true;
     }
-
+    
     /**
      * Get captcha stylesheet code.
      *
      * @return string
      */
     public function getStyle(){
-        return '<style>
-            .g-recaptcha > div {
-                width: 100% !important;
-            }
-            .g-recaptcha iframe {
-                width: 100% !important;
-            }
-        </style>';
+        return '';
     }
 
     /**
@@ -178,9 +153,7 @@ class ReCaptcha implements CaptchaInterface
      * @return string
      */
     public function getCaptcha(){
-        return '<div style="display:flex;margin-left:50px;">
-            <div class="g-recaptcha" data-sitekey="'.$this->getKey().'"></div>
-        </div>';
+        return '';
     }
 
     /**
@@ -189,15 +162,14 @@ class ReCaptcha implements CaptchaInterface
      * @return string
      */
     public function getScript(){
-        return '<script src="https://www.google.com/recaptcha/api.js" async defer>
-        </script>';
+        return '';
     }
 
     /**
      * Set http client instance.
      * 
      * @param MvcLTE\Http\Client\Factory $Client
-     * @return MvcLTE\Captcha\Captchas\ReCaptcha
+     * @return MvcLTE\Captcha\Captchas\Hcaptcha
      */
     public function setClient(Factory $Client)
     {
@@ -214,28 +186,28 @@ class ReCaptcha implements CaptchaInterface
     public function getClient()
     {
         return $this->Client;
-    } 
+    }  
 
     /**
-     * Set request instance.
+     * Set http request instance.
      * 
      * @param MvcLTE\Http\Request $Request
-     * @return MvcLTE\Captcha\Captchas\ReCaptcha
+     * @return MvcLTE\Captcha\Captchas\Hcaptcha
      */
     public function setRequest(Request $Request)
     {
         $this->Request = $Request;
-        
+
         return $this;
     }
 
     /**
-     * Set request instance.
+     * Get http request instance.
      * 
      * @return MvcLTE\Http\Request
      */
     public function getRequest()
     {
         return $this->Request;
-    }      
+    }    
 }

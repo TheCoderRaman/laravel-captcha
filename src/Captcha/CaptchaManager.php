@@ -1,23 +1,16 @@
 <?php
 
-namespace MvcLTE\Hashids;
+namespace MvcLTE\Captcha;
 
 use \InvalidArgumentException;
 
-use \Hashids\Hashids;
-
 use MvcLTE\Helpers\ArrayData;
-use MvcLTE\Hashids\HashidsFactory;
+use MvcLTE\Captcha\CaptchaFactory;
 use MvcLTE\Contracts\Config\Config;
-use MvcLTE\Contracts\Hashids\ManagerInterface;
+use MvcLTE\Contracts\Captcha\CaptchaInterface;
+use MvcLTE\Contracts\Captcha\ManagerInterface;
 
-/**
- * @method string encode(mixed ...$Numbers)
- * @method array decode(string $Hash)
- * @method string encodeHex(string $Str)
- * @method string decodeHex(string $Hash)
- */
-class HashidsManager implements ManagerInterface
+class CaptchaManager implements ManagerInterface
 {
     /**
      * The config instance.
@@ -27,41 +20,48 @@ class HashidsManager implements ManagerInterface
     protected $Config;
 
     /**
-     * Hashids factory instance
+     * Captcha factory instance
      * 
-     * @var Hashids\HashidsFactory $Factory
+     * @var MvcLTE\Captcha\CaptchaFactory $Factory
      */
     protected $Factory;
 
     /**
-     * The active connection instances.
+     * The created captcha instances.
      *
-     * @var array<string,object> $Connections
+     * @var array<string,object> $Captchas
      */
-    protected $Connections = [];
+    protected $Captchas = [];
 
     /**
-     * The custom connection resolvers.
+     * The custom captchas resolvers.
      *
      * @var array<string,callable> $Extensions
      */
     protected $Extensions = [];
 
     /**
-     * Construct hashids manager instance
+     * The active captcha instance.
+     *
+     * @var array<string,object> $CurrentCaptcha
+     */
+    protected $CurrentCaptcha;
+
+    /**
+     * Construct captchas manager instance
      * 
      * @param MvcLTE\Contracts\Config\Config $Config
-     * @param Hashids\HashidsFactory $Factory
+     * @param MvcLTE\Captcha\CaptchaFactory $Factory
      * @return void
      */
-    public function __construct(Config $Config, HashidsFactory $Factory)
+    public function __construct(Config $Config, CaptchaFactory $Factory)
     {
         $this->Config = $Config;
         $this->Factory = $Factory;
     }
 
     /**
-     * Get a connection instance.
+     * Get a captcha instance.
      *
      * @param string|null $Name
      *
@@ -69,19 +69,19 @@ class HashidsManager implements ManagerInterface
      *
      * @return object
      */
-    public function connection(string $Name = null)
+    public function captcha(string $Name = null)
     {
-        $Name = $Name ?: $this->getDefaultConnection();
+        $Name = $Name ?: $this->getDefaultCaptcha();
 
-        if (!isset($this->Connections[$Name])) {
-            $this->Connections[$Name] = $this->makeConnection($Name);
+        if (!isset($this->Captchas[$Name])) {
+            $this->Captchas[$Name] = $this->makeCaptcha($Name);
         }
 
-        return $this->Connections[$Name];
+        return $this->CurrentCaptcha = $this->Captchas[$Name];
     }
 
     /**
-     * Reconnect to the given connection.
+     * Reset to the given captcha.
      *
      * @param string|null $Name
      *
@@ -89,42 +89,43 @@ class HashidsManager implements ManagerInterface
      *
      * @return object
      */
-    public function reconnect(string $Name = null)
+    public function reset(string $Name = null)
     {
-        $Name = $Name ?: $this->getDefaultConnection();
+        $Name = $Name ?: $this->getDefaultCaptcha();
 
-        $this->disconnect($Name);
+        $this->remove($Name);
 
-        return $this->connection($Name);
+        return $this->CurrentCaptcha = $this->captcha($Name);
     }
 
     /**
-     * Disconnect from the given connection.
+     * Remove a captcha from the captchas.
      *
      * @param string|null $Name
      *
      * @return void
      */
-    public function disconnect(string $Name = null)
+    public function remove(string $Name = null)
     {
-        $Name = $Name ?: $this->getDefaultConnection();
+        $Name = $Name ?: $this->getDefaultCaptcha();
 
-        unset($this->Connections[$Name]);
+        unset($this->Captchas[$Name]);
     }
 
     /**
      * Create new hashids instance with provided configuration
      * 
+     * @param string $Type
      * @param array $Config
-     * @return void
+     * @return MvcLTE\Contracts\Captcha\CaptchaInterface
      */
-    protected function createConnection(array $Config): Hashids
+    protected function createCaptcha(string $Type,array $Config): CaptchaInterface
     {
-        return $this->Factory->make($Config);
+        return $this->Factory->make($Type,$Config);
     }
 
     /**
-     * Make the connection instance.
+     * Make the captcha instance.
      *
      * @param string $Name
      *
@@ -132,21 +133,21 @@ class HashidsManager implements ManagerInterface
      *
      * @return object
      */
-    protected function makeConnection(string $Name)
+    protected function makeCaptcha(string $Name)
     {
-        $Config = $this->getConnectionConfig($Name);
+        $Config = $this->getCaptchaConfig($Name);
 
         if (isset($this->Extensions[$Name])) {
             return $this->Extensions[$Name]($Config);
         }
 
-        if ($Driver = ArrayData::get($Config, 'driver')) {
-            if (isset($this->Extensions[$Driver])) {
-                return $this->Extensions[$Driver]($Config);
+        if ($Type = ArrayData::get($Config, 'type')) {
+            if (isset($this->Extensions[$Type])) {
+                return $this->Extensions[$Type]($Config);
             }
         }
 
-        return $this->createConnection($Config);
+        return $this->createCaptcha($Type,$Config);
     }
 
     /**
@@ -156,21 +157,21 @@ class HashidsManager implements ManagerInterface
      */
     protected function getConfigName(): string
     {
-        return 'hashids';
+        return 'captcha';
     }
 
     /**
      * Get factory instance
      * 
-     * @return Hashids\HashidsFactory
+     * @return MvcLTE\Captcha\CaptchaFactory
      */
-    public function getFactory(): HashidsFactory
+    public function getFactory(): CaptchaFactory
     {
         return $this->Factory;
     }
 
     /**
-     * Get the configuration for a connection.
+     * Get the configuration for a captcha.
      *
      * @param string|null $Name
      *
@@ -178,30 +179,30 @@ class HashidsManager implements ManagerInterface
      *
      * @return array
      */
-    public function getConnectionConfig(string $Name = null)
+    public function getCaptchaConfig(string $Name = null)
     {
-        $Name = $Name ?: $this->getDefaultConnection();
+        $Name = $Name ?: $this->getDefaultCaptcha();
 
-        return $this->getNamedConfig('connections', 'connection', $Name);
+        return $this->getNamedConfig('captchas', 'captcha', $Name);
     }
 
     /**
      * Get the given named configuration.
      *
      * @param string $Type
-     * @param string $Desc
+     * @param string $Description
      * @param string $Name
      *
      * @throws \InvalidArgumentException
      *
      * @return array
      */
-    protected function getNamedConfig(string $Type, string $Desc, string $Name)
+    protected function getNamedConfig(string $Type, string $Description, string $Name)
     {
         $Data = $this->Config->get($this->getConfigName().'.'.$Type);
 
         if (!is_array($Config = ArrayData::get($Data, $Name)) && !$Config) {
-            throw new InvalidArgumentException("$Desc [$Name] not configured.");
+            throw new InvalidArgumentException("{$Description} [$Name] not configured.");
         }
 
         $Config['name'] = $Name;
@@ -210,29 +211,29 @@ class HashidsManager implements ManagerInterface
     }
 
     /**
-     * Get the default connection name.
+     * Get the default captcha name.
      *
      * @return string
      */
-    public function getDefaultConnection()
+    public function getDefaultCaptcha()
     {
         return $this->Config->get($this->getConfigName().'.default');
     }
 
     /**
-     * Set the default connection name.
+     * Set the default captcha name.
      *
      * @param string $Name
      *
      * @return void
      */
-    public function setDefaultConnection(string $Name)
+    public function setDefaultCaptcha(string $Name)
     {
         $this->Config->set($this->getConfigName().'.default', $Name);
     }
 
     /**
-     * Register an extension connection resolver.
+     * Register an extension captcha resolver.
      *
      * @param string   $Name
      * @param callable $Resolver
@@ -249,13 +250,27 @@ class HashidsManager implements ManagerInterface
     }
 
     /**
-     * Return all of the created connections.
+     * Return all of the created captchas.
      *
      * @return array<string,object>
      */
-    public function getConnections()
+    public function getCaptchas()
     {
-        return $this->Connections;
+        return $this->Captchas;
+    }
+
+    /**
+     * Get current captcha instance.
+     *
+     * @return MvcLTE\Contracts\Captcha\CaptchaInterface
+     */
+    public function getCurrentCaptcha()
+    {
+        if(!isset($this->CurrentCaptcha)){
+            return $this->captcha();
+        }
+
+        return $this->CurrentCaptcha;
     }
 
     /**
@@ -269,7 +284,7 @@ class HashidsManager implements ManagerInterface
     }
 
     /**
-     * Dynamically pass methods to the default connection.
+     * Dynamically pass methods to the default captcha.
      *
      * @param string $Method
      * @param array  $Parameters
@@ -278,6 +293,6 @@ class HashidsManager implements ManagerInterface
      */
     public function __call(string $Method, array $Parameters)
     {
-        return $this->connection()->$Method(...$Parameters);
+        return $this->captcha()->{$Method}(...$Parameters);
     }    
 }

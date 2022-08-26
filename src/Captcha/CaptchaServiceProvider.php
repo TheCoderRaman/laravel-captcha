@@ -2,6 +2,8 @@
 
 namespace MvcLTE\Captcha;
 
+use MvcLTE\Http\Request;
+use MvcLTE\Http\Client\Factory;
 use MvcLTE\Captcha\CaptchaFactory;
 use MvcLTE\Captcha\CaptchaManager;
 
@@ -9,7 +11,7 @@ use MvcLTE\Support\ServiceProvider;
 use MvcLTE\Contracts\Container\Container;
 use MvcLTE\Core\Application as Application;
 
-class HashidsServiceProvider extends ServiceProvider
+class HashiServiceProvider extends ServiceProvider
 {
     /**
      * Boot up the service provider
@@ -28,15 +30,15 @@ class HashidsServiceProvider extends ServiceProvider
      */
     protected function setupConfig(): void
     {
-        $Source = realpath($Raw = __DIR__ . '/../../config/hashids.php') ?: $Raw;
+        $Source = realpath($Raw = __DIR__ . '/../../config/captcha.php') ?: $Raw;
 
         if ($this->App instanceof Application && $this->App->runningInConsole()) {
             $this->publishes([
-                $Source => config_path('hashids.php')
+                $Source => config_path('captcha.php')
             ]);
         }
 
-        $this->mergeConfigFrom($Source, 'hashids');
+        $this->mergeConfigFrom($Source, 'captcha');
     }
 
     /**
@@ -58,11 +60,14 @@ class HashidsServiceProvider extends ServiceProvider
      */
     protected function registerFactory(): void
     {
-        $this->App->singleton('Hashids.Factory', function () {
-            return new HashidsFactory();
+        $this->App->singleton('Captcha.Factory', function () {
+            return new CaptchaFactory(
+                $this->App->make(Request::class),
+                $this->App->make(Factory::class),
+            );
         });
 
-        $this->App->alias('Hashids.Factory', HashidsFactory::class);
+        $this->App->alias('Captcha.Factory', CaptchaFactory::class);
     }
 
     /**
@@ -72,14 +77,14 @@ class HashidsServiceProvider extends ServiceProvider
      */
     protected function registerManager(): void
     {
-        $this->App->singleton('Hashids', function (Container $App) {
+        $this->App->singleton('Captcha.Manager', function (Container $App) {
             $Config = $App['Config'];
-            $Factory = $App['Hashids.Factory'];
+            $Factory = $App['Captcha.Factory'];
 
-            return new HashidsManager($Config, $Factory);
+            return new CaptchaManager($Config, $Factory);
         });
 
-        $this->App->alias('Hashids', HashidsManager::class);
+        $this->App->alias('Captcha.Manager', CaptchaManager::class);
     }
 
     /**
@@ -89,13 +94,11 @@ class HashidsServiceProvider extends ServiceProvider
      */
     protected function registerBindings(): void
     {
-        $this->App->bind('Hashids.Connection', function (Container $App) {
-            $Manager = $App['Hashids'];
+        $this->App->bind('Captcha', function (Container $App) {
+            $Manager = $App['Captcha'];
 
-            return $Manager->connection();
+            return $Manager->captcha();
         });
-
-        $this->App->alias('Hashids.Connection', Hashids::class);
     }
 
     /**
@@ -106,9 +109,9 @@ class HashidsServiceProvider extends ServiceProvider
     public function provides(): array
     {
         return [
-            'Hashids',
-            'Hashids.Factory',
-            'Hashids.Connection',
+            'Captcha',
+            'Captcha.Factory',
+            'Captcha.Manager',
         ];
     }
 }
