@@ -126,7 +126,7 @@ class Hcaptcha implements CaptchaInterface
      */
     public function getUrl()
     {
-        return $this->CaptchaUrl;
+        return $this->Url;
     } 
 
     /**
@@ -135,11 +135,11 @@ class Hcaptcha implements CaptchaInterface
      * @return bool
      */
     public function verify(){
-        if($this->Request->hasInput('h-captcha-response') === false){
+        if(!$this->Request->hasInput('h-captcha-response')){
             return false;
         }
 
-        $Response = Http::acceptJson()->post($this->getUrl(), [
+        $Response = $this->Client->asForm()->acceptJson()->post($this->getUrl(),[
             'secret' => $this->getSecret(),
             'remoteip' => $this->Request->ip(),
             'response' => $this->Request->getInput(
@@ -147,13 +147,9 @@ class Hcaptcha implements CaptchaInterface
             )
         ]);
 
-        if($Response->successful()){
-            if(!isset($Response['success'])){
-                return false;
-            }
-        }
-
-        return true;
+        return (($Response->successful())
+            ?$Response->json('success'):false
+        );
     }
     
     /**

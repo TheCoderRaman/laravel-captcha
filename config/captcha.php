@@ -51,14 +51,14 @@ return [
     'captchas' => [
 
         'hcaptcha' => [
-            'key' => 'YOUR-SITE-KEY',
-            'secret' => 'YOUR-SITE-SECRET',
+            'key' => '10000000-ffff-ffff-ffff-000000000001',
+            'secret' => '0x0000000000000000000000000000000000000000',
             'type' => 'hcaptcha'
         ],
 
         'recaptcha' => [
-            'key' => 'YOUR-SITE-KEY',
-            'secret' => 'YOUR-SITE-SECRET',
+            'key' => '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+            'secret' => '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe',
             'type' => 'recaptcha'
         ],       
 

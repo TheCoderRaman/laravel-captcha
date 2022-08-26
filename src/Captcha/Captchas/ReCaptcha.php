@@ -3,7 +3,6 @@
 namespace MvcLTE\Captcha\Captchas;
 
 use MvcLTE\Http\Request;
-use MvcLTE\Support\Facades\Http;
 use MvcLTE\Contracts\Captcha\CaptchaInterface;
 
 class ReCaptcha implements CaptchaInterface
@@ -126,7 +125,7 @@ class ReCaptcha implements CaptchaInterface
      */
     public function getUrl()
     {
-        return $this->CaptchaUrl;
+        return $this->Url;
     } 
 
     /**
@@ -139,7 +138,7 @@ class ReCaptcha implements CaptchaInterface
             return false;
         }
 
-        $Response = Http::acceptJson()->get($this->getUrl(), [
+        $Response = $this->Client->acceptJson()->get($this->getUrl(), [
             'secret' => $this->getSecret(),
             'remoteip' => $this->Request->ip(),
             'response' => $this->Request->getInput(
@@ -147,13 +146,9 @@ class ReCaptcha implements CaptchaInterface
             )
         ]);
 
-        if($Response->successful()){
-            if(!isset($Response['success'])){
-                return false;
-            }
-        }
-
-        return true;
+        return (($Response->successful())
+            ?$Response->json('success'):false
+        );
     }
 
     /**
