@@ -71,6 +71,10 @@ class CaptchaManager implements ManagerInterface
      */
     public function captcha(string $Name = null)
     {
+        if(!$this->getCaptchaStatus()){
+            return $this->makeCaptcha("nullcaptcha");
+        }
+
         $Name = $Name ?: $this->getDefaultCaptcha();
 
         if (!isset($this->Captchas[$Name])) {
@@ -168,6 +172,20 @@ class CaptchaManager implements ManagerInterface
     public function getFactory(): CaptchaFactory
     {
         return $this->Factory;
+    }
+
+    /**
+     * Get captcha status
+     *
+     * @param string|null $Name
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return bool
+     */
+    public function getCaptchaStatus()
+    {
+        return $this->Config->get($this->getConfigName().'.status');
     }
 
     /**

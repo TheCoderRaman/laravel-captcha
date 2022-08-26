@@ -162,7 +162,8 @@ class ReCaptcha implements CaptchaInterface
      * @return string
      */
     public function getStyle(){
-        return '<style>
+        return '<!--Captcha StyleSheet-->
+        <style>
             .g-recaptcha > div {
                 width: 100% !important;
             }
@@ -178,7 +179,8 @@ class ReCaptcha implements CaptchaInterface
      * @return string
      */
     public function getCaptcha(){
-        return '<div style="display:flex;margin-left:50px;">
+        return '<!--Captcha Code-->
+        <div style="display:flex;margin-left:50px;">
             <div class="g-recaptcha" data-sitekey="'.$this->getKey().'"></div>
         </div>';
     }
@@ -189,7 +191,8 @@ class ReCaptcha implements CaptchaInterface
      * @return string
      */
     public function getScript(){
-        return '<script src="https://www.google.com/recaptcha/api.js" async defer>
+        return '<!--Captcha Script-->
+        <script src="https://www.google.com/recaptcha/api.js" async defer>
         </script>';
     }
 

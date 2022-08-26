@@ -6,10 +6,10 @@ use MvcLTE\Http\Request;
 use MvcLTE\Http\Client\Factory;
 use MvcLTE\Captcha\CaptchaFactory;
 use MvcLTE\Captcha\CaptchaManager;
-
 use MvcLTE\Support\ServiceProvider;
 use MvcLTE\Contracts\Container\Container;
 use MvcLTE\Core\Application as Application;
+use MvcLTE\Contracts\Captcha\ManagerInterface as CaptchaManagerInferface;
 
 class CaptchaServiceProvider extends ServiceProvider
 {
@@ -85,6 +85,7 @@ class CaptchaServiceProvider extends ServiceProvider
         });
 
         $this->App->alias('Captcha.Manager', CaptchaManager::class);
+        $this->App->alias('Captcha.Manager', CaptchaManagerInferface::class);
     }
 
     /**

@@ -162,7 +162,8 @@ class Hcaptcha implements CaptchaInterface
      * @return string
      */
     public function getStyle(){
-        return '<style>
+        return '<!--Captcha StyleSheet-->
+        <style>
             .h-captcha > div {
                 width: 100% !important;
             }
@@ -178,7 +179,8 @@ class Hcaptcha implements CaptchaInterface
      * @return string
      */
     public function getCaptcha(){
-        return '<div style="display:flex;margin-left:50px;">
+        return '<!--Captcha Code-->
+        <div style="display:flex;margin-left:50px;">
             <div class="h-captcha" data-sitekey="'.$this->getKey().'"></div>
         </div>';
     }
@@ -189,7 +191,8 @@ class Hcaptcha implements CaptchaInterface
      * @return string
      */
     public function getScript(){
-        return '<script src="https://hcaptcha.com/1/api.js" async defer>
+        return '<!--Captcha Script-->
+        <script src="https://hcaptcha.com/1/api.js" async defer>
         </script>';
     }
 

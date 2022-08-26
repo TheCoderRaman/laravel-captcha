@@ -10,7 +10,6 @@
  */
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Captcha Handler
@@ -23,6 +22,20 @@ return [
     */
 
     'default' => 'hcaptcha',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Captcha verification status
+    |--------------------------------------------------------------------------
+    |
+    | Here you can enable/disable captcha verification. For the convenience of 
+    | the user, captcha will be replaced by null handler which will work as 
+    | placeholder which do not show anything and also return true. So you can
+    | add it once and dont have to worry about anything later on.
+    |
+    */
+
+    'status' => true,
 
     /*
     |--------------------------------------------------------------------------
