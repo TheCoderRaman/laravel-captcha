@@ -11,7 +11,7 @@ use MvcLTE\Support\ServiceProvider;
 use MvcLTE\Contracts\Container\Container;
 use MvcLTE\Core\Application as Application;
 
-class HashiServiceProvider extends ServiceProvider
+class CaptchaServiceProvider extends ServiceProvider
 {
     /**
      * Boot up the service provider
