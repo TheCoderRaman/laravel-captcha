@@ -2,6 +2,27 @@
 
 use MvcLTE\Contracts\Captcha\ManagerInterface;
 
+if (! function_exists('captcha')) {
+    /**
+     * Get captcha instance.
+     *
+     * @param  string  $Name
+     * @return string
+     */ 
+    function captcha(string $Name = '')
+    {
+        $CaptchaManager = app(ManagerInterface::class);
+
+        if(empty($Name)){
+            return (app(ManagerInterface::class)
+                ->getCurrentCaptcha()
+            );
+        }
+
+        return $CaptchaManager->captcha($Name);
+    }
+}
+
 if (! function_exists('captcha_style')) {
     /**
      * Get captcha stylesheet code.
@@ -20,18 +41,18 @@ if (! function_exists('captcha_style')) {
             );
         }
 
-        return $CaptchaManager->captcha()->getStyle();
+        return $CaptchaManager->captcha($Name)->getStyle();
     }
 }
 
-if (! function_exists('captcha')) {
+if (! function_exists('captcha_code')) {
     /**
-     * Get the captcha html code.
+     * Get the captcha code.
      *
      * @param  string  $Name
      * @return string
      */ 
-    function captcha(string $Name = '')
+    function captcha_code(string $Name = '')
     {
         $CaptchaManager = app(ManagerInterface::class);
 
@@ -42,7 +63,7 @@ if (! function_exists('captcha')) {
             );
         }
 
-        return $CaptchaManager->captcha()->getCaptcha();
+        return $CaptchaManager->captcha($Name)->getCaptcha();
     }
 }
 
@@ -64,6 +85,6 @@ if (! function_exists('captcha_script')) {
             );
         }
 
-        return $CaptchaManager->captcha()->getScript();
+        return $CaptchaManager->captcha($Name)->getScript();
     }
 }
