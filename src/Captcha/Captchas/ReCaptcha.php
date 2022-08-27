@@ -3,6 +3,7 @@
 namespace MvcLTE\Captcha\Captchas;
 
 use MvcLTE\Http\Request;
+use MvcLTE\Http\Client\Factory;
 use MvcLTE\Contracts\Captcha\CaptchaInterface;
 
 class ReCaptcha implements CaptchaInterface
