@@ -139,7 +139,7 @@ class ReCaptcha implements CaptchaInterface
             return false;
         }
 
-        $Response = $this->Client->acceptJson()->get($this->getUrl(), [
+        $Response = $this->Client->asForm()->acceptJson()->post($this->getUrl(), [
             'secret' => $this->getSecret(),
             'remoteip' => $this->Request->ip(),
             'response' => $this->Request->getInput(
