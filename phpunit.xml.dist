@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    colors="true"
+    failOnRisky="true"
+    failOnWarning="true"
+    backupGlobals="false"
+    stopOnFailure="false"
+    executionOrder="random"
+    processIsolation="false"
+    failOnEmptyTestSuite="true"
+    backupStaticProperties="false"
+    bootstrap="vendor/autoload.php"
+    cacheDirectory=".phpunit.cache"
+    beStrictAboutOutputDuringTests="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd"
+>
+    <testsuites>
+        <testsuite name="Laravel Captcha Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <logging>
+        <junit outputFile="build/report.junit.xml"/>
+    </logging>
+
+    <source>
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </source>
+</phpunit>
