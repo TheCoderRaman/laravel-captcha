@@ -62,7 +62,7 @@ return [
             'key' => '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
             'secret' => '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe',
             'type' => 'recaptcha'
-        ],       
+        ],
 
         /*
         |--------------------------------------------------------------------------
@@ -78,7 +78,7 @@ return [
             'key' => 'NOT-REQUIRED',
             'secret' => 'NOT-REQUIRED',
             'type' => 'nullcaptcha'
-        ],         
+        ],
 
     ],
 
