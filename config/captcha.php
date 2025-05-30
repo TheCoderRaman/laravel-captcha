@@ -1,5 +1,7 @@
 <?php
 
+use TheCoderRaman\Captcha\Enums\Captcha;
+
 /**
  * Copyright (c) Animax Developers.
  *
@@ -21,7 +23,7 @@ return [
     |
     */
 
-    'default' => 'hcaptcha',
+    'default' => Captcha::NullCaptcha->value,
 
     /*
     |--------------------------------------------------------------------------
