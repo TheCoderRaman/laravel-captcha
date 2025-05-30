@@ -1,6 +1,9 @@
 <?php
 
 use TheCoderRaman\Captcha\Enums\Captcha;
+use TheCoderRaman\Captcha\Drivers\Hcaptcha;
+use TheCoderRaman\Captcha\Drivers\ReCaptcha;
+use TheCoderRaman\Captcha\Drivers\NullCaptcha;
 
 /**
  * Captcha Package Configuration
@@ -40,6 +43,28 @@ return [
     */
 
     'status' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | CAPTCHA Driver Class Mappings
+    |--------------------------------------------------------------------------
+    |
+    | This section maps the enum values (used as driver identifiers) to
+    | their respective concrete CAPTCHA driver class implementations.
+    |
+    | This allows the CAPTCHA factory to dynamically resolve and instantiate
+    | the correct driver class based on the chosen CAPTCHA type.
+    |
+    | You can extend this list to register custom CAPTCHA drivers
+    | by associating a unique string identifier with your driver's class name.
+    |
+    */
+
+    'drivers' => [
+        Captcha::Hcaptcha->value => Hcaptcha::class,
+        Captcha::ReCaptcha->value => ReCaptcha::class,
+        Captcha::NullCaptcha->value => NullCaptcha::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------
