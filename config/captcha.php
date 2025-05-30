@@ -51,19 +51,6 @@ return [
     */
 
     'captchas' => [
-
-        'hcaptcha' => [
-            'key' => '10000000-ffff-ffff-ffff-000000000001',
-            'secret' => '0x0000000000000000000000000000000000000000',
-            'type' => 'hcaptcha'
-        ],
-
-        'recaptcha' => [
-            'key' => '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
-            'secret' => '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe',
-            'type' => 'recaptcha'
-        ],
-
         /*
         |--------------------------------------------------------------------------
         | Null captcha
@@ -80,6 +67,16 @@ return [
             'type' => 'nullcaptcha'
         ],
 
-    ],
+        'hcaptcha' => [
+            'key' => '10000000-ffff-ffff-ffff-000000000001',
+            'secret' => '0x0000000000000000000000000000000000000000',
+            'type' => 'hcaptcha'
+        ],
 
+        'recaptcha' => [
+            'key' => '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+            'secret' => '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe',
+            'type' => 'recaptcha'
+        ],
+    ],
 ];
