@@ -15,6 +15,21 @@ use TheCoderRaman\Captcha\Drivers\NullCaptcha;
 return [
     /*
     |--------------------------------------------------------------------------
+    | Captcha Verification Status
+    |--------------------------------------------------------------------------
+    |
+    | Here you can enable/disable captcha verification globally. For the
+    | convenience of the user, if set to `false`, CAPTCHA will be replaced
+    | by the NullCaptcha handler which works as a placeholder, rendering
+    | nothing and always returning true for verification. This allows you
+    | to add CAPTCHA code once and control its activation without removal.
+    |
+    */
+
+    'status' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Default Captcha Handler
     |--------------------------------------------------------------------------
     |
@@ -28,21 +43,6 @@ return [
     */
 
     'default' => Captcha::NullCaptcha->value,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Captcha Verification Status
-    |--------------------------------------------------------------------------
-    |
-    | Here you can enable/disable captcha verification globally. For the
-    | convenience of the user, if set to `false`, CAPTCHA will be replaced
-    | by the NullCaptcha handler which works as a placeholder, rendering
-    | nothing and always returning true for verification. This allows you
-    | to add CAPTCHA code once and control its activation without removal.
-    |
-    */
-
-    'status' => true,
 
     /*
     |--------------------------------------------------------------------------
