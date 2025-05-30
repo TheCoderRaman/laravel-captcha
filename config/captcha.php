@@ -66,7 +66,7 @@ return [
         | 'key' and 'secret' are placeholders and not functionally required for NullCaptcha.
         |
         */
-        'nullcaptcha' => [
+        Captcha::NullCaptcha->value => [
             'type' => 'null',
             'key' => 'NOT-REQUIRED',
             'secret' => 'NOT-REQUIRED',
@@ -83,7 +83,7 @@ return [
         | 'type' should be 'hcaptcha'.
         |
         */
-        'hcaptcha' => [
+        Captcha::Hcaptcha->value => [
             'type' => 'hcaptcha',
             'key' => '10000000-ffff-ffff-ffff-000000000001',
             'secret' => '0x0000000000000000000000000000000000000000',
@@ -100,7 +100,7 @@ return [
         | 'type' should be 'recaptcha'.
         |
         */
-        'recaptcha' => [
+        Captcha::ReCaptcha->value => [
             'type' => 'recaptcha',
             'key' => '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
             'secret' => '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe',
