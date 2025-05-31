@@ -39,6 +39,9 @@
         }
     },
     "autoload-dev": {
+        "files": [
+            "src/Helpers/Helper.php"
+        ],
         "psr-4": {
             "TheCoderRaman\\Captcha\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
