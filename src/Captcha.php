@@ -3,6 +3,8 @@
 namespace TheCoderRaman\Captcha;
 
 
+use \BadMethodCallException;
+
 use Illuminate\Http\Request;
 use TheCoderRaman\Captcha\Factory;
 use Illuminate\Http\Client\Factory as HttpClient;
@@ -282,14 +284,20 @@ class Captcha
      */
     public function __call(string $method, array $parameters): mixed
     {
-        if (!method_exists($this, $method) && !isset($this->driver)) {
-            // Initialize with default or configured driver
-            $this->safeCaptcha();
+        if(method_exists($this, $method)){
+            return $this->{$method}(...$parameters);
         }
 
-        // Check if the method exists on this class itself, otherwise delegate to the driver.
-        return (
-            (method_exists($this, $method) ? $this : $this->driver)->{$method}(...$parameters)
-        );
+        if(!isset($this->driver))$this->safeCaptcha();
+
+        if(isset($this->driver)) {
+            return $this->driver->{$method}(...$parameters);
+        }
+
+        throw new BadMethodCallException(sprintf(
+            'Call to undefined method %s::%s() and no CAPTCHA driver could be resolved.',
+            static::class,
+            $method
+        ));
     }
 }
