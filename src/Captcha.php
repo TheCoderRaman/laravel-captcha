@@ -282,7 +282,7 @@ class Captcha
      */
     public function __call(string $method, array $parameters): mixed
     {
-        if (!method_exists($this, $method) && !$this->driver) {
+        if (!method_exists($this, $method) && !isset($this->driver)) {
             // Initialize with default or configured driver
             $this->safeCaptcha();
         }
