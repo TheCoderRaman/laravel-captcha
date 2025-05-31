@@ -84,18 +84,23 @@ class Factory
     }
 
     /**
-     * Resolves and returns a CAPTCHA driver instance.
+     * Creates a CAPTCHA driver instance without error handling.
      *
-     * This is the primary method for obtaining a CAPTCHA driver. It determines
-     * which driver to use (either explicitly specified, or the default from config),
-     * fetches its configuration, attempts to create the driver, and handles
-     * potential `CaptchaException`s by logging them and returning `false`.
+     * This method attempts to resolve and instantiate a CAPTCHA driver based on the
+     * provided driver name or the default configured driver. It merges explicit
+     * configuration with any pre-defined settings for the driver.
+     *
+     * Unlike the `make()` method, this method does not include try-catch blocks
+     * for `CaptchaException` and will directly throw an exception if driver creation
+     * fails (e.g., driver class not found, invalid instance returned by an extension).
      *
      * @param string|null $driver
      * @param array $config
-     * @return DriverInterface|bool
+     * @return DriverInterface
+     * 
+     * @throws CaptchaException
      */
-    public function make(?string $driver = null, array $config = []): DriverInterface|bool
+    public function unSafeMake(?string $driver = null, array $config = []): DriverInterface
     {
         /** @var string */
         $configName = $this->captcha->getConfigName();
@@ -109,13 +114,28 @@ class Factory
             );
         }
 
-        try {
+        return $this->createDriver($driver, array_merge(
             // Merge explicit config with configured values for the specific driver.
-            $mergedConfig = array_merge(
-                Config::get("{$configName}.captchas.{$driver}", []), $config
-            );
+            Config::get("{$configName}.captchas.{$driver}", []), $config
+        ));
+    }
 
-            return $this->createDriver($driver, $mergedConfig);
+    /**
+     * Resolves and returns a CAPTCHA driver instance.
+     *
+     * This is the primary method for obtaining a CAPTCHA driver. It determines
+     * which driver to use (either explicitly specified, or the default from config),
+     * fetches its configuration, attempts to create the driver, and handles
+     * potential `CaptchaException`s by logging them and returning `false`.
+     *
+     * @param string|null $driver
+     * @param array $config
+     * @return DriverInterface|bool
+     */
+    public function make(?string $driver = null, array $config = []): DriverInterface|bool
+    {
+        try {
+            return $this->unSafeMake($driver, $config);
         } catch (CaptchaException $e) {
             // Log the exception for debugging purposes.
             Log::error("Failed to create CAPTCHA driver [{$driver}]: " . $e->getMessage());
