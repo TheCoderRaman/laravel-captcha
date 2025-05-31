@@ -159,7 +159,7 @@ class Factory
         }
 
         // Ensure a class name was found.
-        if ($class && class_exists($class)) {
+        if (!empty($class) && class_exists($class)) {
             // Instantiate the driver class using Laravel's container,
             // passing only relevant config keys to its constructor.
             $instance = App::make(
@@ -171,6 +171,10 @@ class Factory
         }
 
         if(isset($this->extensions[$driver]) || isset($this->extensions[$class])) {
+            $class = (
+                !empty($class) ? $class : Closure::Class
+            );
+
             // If an extension exists, call its resolver to create
             // the driver instance. The resolver receives the merged configuration.
             $resolver = (
