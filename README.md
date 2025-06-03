@@ -10,8 +10,8 @@
 <p align="center">
   <a title="license" href="./LICENSE"><img src="https://img.shields.io/github/license/TheCoderRaman/laravel-captcha" alt="license"></a>
   <a title="laravel" href="https://laravel.com"><img src="https://img.shields.io/badge/logo-laravel-blue?logo=laravel" alt="laravel"></a>
-  <a title="packagist" href="https://packagist.org/packages/TheCoderRaman/laravel-captcha"><img src="https://img.shields.io/packagist/v/TheCoderRaman/laravel-captcha.svg?style=flat-square" alt="Latest Version on Packagist"></a>
-  <a title="downloads" href="https://packagist.org/packages/thecoderman/laravel-captcha"><img src="https://img.shields.io/packagist/dt/thecoderman/laravel-captcha.svg?style=flat-square" alt="Total Downloads on Packagist"></a>
+  <a title="packagist" href="https://packagist.org/packages/TheCoderRaman/laravel-captcha"><img src="https://img.shields.io/packagist/v/thecoderraman/laravel-captcha.svg?style=flat-square" alt="Latest Version on Packagist"></a>
+  <a title="downloads" href="https://packagist.org/packages/thecoderraman/laravel-captcha"><img src="https://img.shields.io/packagist/dt/thecoderraman/laravel-captcha.svg?style=flat-square" alt="Total Downloads on Packagist"></a>
 </p>
 
 A flexible and extensible Laravel package for integrating multiple CAPTCHA services including Google reCAPTCHA, hCaptcha, and custom implementations.
